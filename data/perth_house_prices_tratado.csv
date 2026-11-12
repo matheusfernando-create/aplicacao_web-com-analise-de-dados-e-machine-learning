@@ -2090,7 +2090,6 @@ area_habitavel,quartos,ano_construcao,bairro,preco
 303,5,1999,Brentwood,1050000
 137,3,2011,Ridgewood,385000
 179,3,2013,Beaconsfield,665000
-108,3,2015,Kwinana Town Centre,330000
 337,5,1997,Mount Claremont,1270000
 207,4,2014,Byford,430000
 172,4,1997,Jane Brook,510000
@@ -5652,7 +5651,6 @@ area_habitavel,quartos,ano_construcao,bairro,preco
 265,4,2009,Ascot,1200000
 173,4,1996,Alexander Heights,481000
 172,4,2003,Henley Brook,450000
-113,3,2015,Ashby,455000
 184,3,2000,East Victoria Park,775000
 161,5,2014,Yanchep,370000
 207,3,2014,Gwelup,975000
@@ -10342,7 +10340,6 @@ area_habitavel,quartos,ano_construcao,bairro,preco
 183,4,1985,Parkerville,730000
 143,4,2015,Singleton,199000
 222,5,2010,Carramar,515150
-95,3,1962,Osborne Park,930000
 253,5,2007,Hovea,215000
 100,4,1952,Wembley,1000000
 315,6,1998,Sawyers Valley,1050000
@@ -12107,7 +12104,6 @@ area_habitavel,quartos,ano_construcao,bairro,preco
 190,3,2011,Ardross,910000
 96,3,1969,Beckenham,290000
 94,2,1950,Midvale,252500
-164,3,1998,Kensington,745000
 325,4,2008,Salter Point,1450000
 170,3,1986,North Beach,835000
 239,3,1992,Watermans Bay,996000
@@ -13045,7 +13041,6 @@ area_habitavel,quartos,ano_construcao,bairro,preco
 194,4,1999,Riverton,682000
 374,4,2005,Iluka,1150000
 156,4,1994,Viveash,545000
-139,4,2013,Brookdale,217000
 180,4,1985,Willetton,755000
 221,3,1993,Thornlie,515000
 115,3,1990,Koongamia,355000
@@ -13237,7 +13232,6 @@ area_habitavel,quartos,ano_construcao,bairro,preco
 243,4,1988,Leeming,695000
 85,3,1969,Lockridge,430000
 182,4,2000,Singleton,459000
-113,3,2015,Kwinana Town Centre,152500
 225,4,2011,Baldivis,485000
 223,4,2015,Landsdale,610000
 117,3,2012,Banksia Grove,290000
@@ -14181,7 +14175,6 @@ area_habitavel,quartos,ano_construcao,bairro,preco
 140,4,1988,Mirrabooka,445000
 211,4,1958,Melville,870000
 175,3,2003,Butler,349000
-120,3,2005,Madeley,400000
 115,3,2002,Bentley,339000
 64,2,1985,Wembley,300000
 88,3,1994,Marangaroo,250000
@@ -14608,7 +14601,6 @@ area_habitavel,quartos,ano_construcao,bairro,preco
 196,4,2007,St James,685000
 90,3,1976,Greenwood,332500
 138,3,1993,Alfred Cove,694000
-79,2,1970,Guildford,365000
 240,5,2012,Wilson,674250
 235,4,1997,Guildford,975000
 315,4,2010,Melville,1020000
@@ -14993,7 +14985,6 @@ area_habitavel,quartos,ano_construcao,bairro,preco
 168,4,2006,Ridgewood,449000
 221,4,2002,Henley Brook,495000
 170,4,2014,Hilbert,385000
-110,3,2016,Ashby,455000
 164,5,1989,Guildford,604000
 200,4,2007,Parmelia,115000
 200,4,1995,Singleton,485000
@@ -18740,7 +18731,6 @@ area_habitavel,quartos,ano_construcao,bairro,preco
 102,3,1972,Two Rocks,275000
 126,3,2006,Butler,300000
 221,4,2009,Carmel,955000
-221,4,2009,Carmel,955000
 130,4,1989,Alexander Heights,395000
 190,3,2015,Eglinton,505000
 276,5,1999,Bull Creek,1180000
@@ -19652,7 +19642,6 @@ area_habitavel,quartos,ano_construcao,bairro,preco
 62,2,1969,Dianella,250000
 119,3,1989,Waikiki,340000
 290,5,2006,Tapping,525000
-138,3,1935,North Perth,980000
 205,4,1963,Ardross,1150000
 315,4,1978,Rossmoyne,1310000
 146,4,1998,Kinross,525000
@@ -19669,7 +19658,6 @@ area_habitavel,quartos,ano_construcao,bairro,preco
 158,4,1980,High Wycombe,405000
 151,3,2012,Banksia Grove,357000
 232,4,2006,Tapping,430000
-117,3,1969,Crawley,815000
 123,3,1946,Midvale,390000
 121,3,1992,Brookdale,310000
 210,4,2003,Singleton,560000
@@ -19740,7 +19728,6 @@ area_habitavel,quartos,ano_construcao,bairro,preco
 127,4,1970,Parmelia,355000
 285,4,2002,Mariginiup,955000
 128,5,2009,Bentley,447000
-228,4,2008,Darch,580000
 135,3,1976,Parmelia,305000
 170,4,1991,Waikiki,375000
 121,4,1981,Bellevue,373000
@@ -19890,7 +19877,6 @@ area_habitavel,quartos,ano_construcao,bairro,preco
 228,5,1993,Mundaring,625000
 180,4,1984,Greenwood,573000
 170,2,1921,West Leederville,900000
-277,4,1997,Iluka,820000
 154,4,1980,Thornlie,369000
 143,3,1960,Kalamunda,535000
 227,4,1950,Roleystone,650000
@@ -20709,7 +20695,6 @@ area_habitavel,quartos,ano_construcao,bairro,preco
 158,4,1988,Alfred Cove,835000
 136,4,2014,South Guildford,475000
 121,2,1965,Mount Claremont,950000
-188,4,2009,Belmont,582500
 182,4,1991,Wembley,960000
 219,3,2010,Daglish,1451000
 208,4,2013,Beaconsfield,715000
@@ -20800,7 +20785,6 @@ area_habitavel,quartos,ano_construcao,bairro,preco
 115,3,2008,Sinagra,417000
 206,4,1992,Marangaroo,510000
 92,3,1964,Koongamia,310000
-91,3,1967,Calista,270000
 182,4,1994,Thornlie,485000
 95,2,1970,Two Rocks,210000
 138,4,1977,Ferndale,585000
@@ -20976,7 +20960,6 @@ area_habitavel,quartos,ano_construcao,bairro,preco
 157,5,1940,Bayswater,699000
 200,4,1988,Samson,475000
 235,5,1996,Singleton,522500
-120,3,2005,Madeley,415000
 79,2,1954,Medina,180000
 124,3,2000,Beeliar,400000
 125,3,2016,Camillo,267000
@@ -22662,7 +22645,6 @@ area_habitavel,quartos,ano_construcao,bairro,preco
 102,3,1994,Balcatta,370000
 197,4,1994,Hazelmere,327000
 214,4,2000,Hocking,570000
-120,3,2005,Madeley,400000
 343,5,2002,Henley Brook,1000000
 213,4,1999,Carramar,505000
 218,5,2008,Bullsbrook,390000
@@ -22842,7 +22824,6 @@ area_habitavel,quartos,ano_construcao,bairro,preco
 267,4,2014,Harrisdale,567000
 201,5,1951,East Fremantle,1300000
 121,3,2013,Ashfield,540000
-198,3,2002,Jolimont,965000
 157,4,2008,Byford,360000
 214,4,1986,Duncraig,604000
 118,3,1984,Balga,380000
@@ -23788,7 +23769,6 @@ area_habitavel,quartos,ano_construcao,bairro,preco
 180,4,1995,Mindarie,498000
 91,3,1964,Carlisle,900000
 207,5,2006,Roleystone,540000
-141,4,2003,Henley Brook,440000
 249,4,1996,Jandakot,865000
 115,3,1979,Hamersley,490000
 188,4,1971,Cottesloe,1720000
@@ -23854,7 +23834,6 @@ area_habitavel,quartos,ano_construcao,bairro,preco
 146,3,1976,Carine,720000
 138,3,1987,Samson,505000
 52,1,2006,West Perth,345000
-130,3,2013,Viveash,220000
 89,3,1940,Sawyers Valley,600000
 219,5,2000,Darlington,720000
 227,5,2005,Darling Downs,975000
@@ -24020,7 +23999,6 @@ area_habitavel,quartos,ano_construcao,bairro,preco
 98,3,1973,Wembley Downs,555000
 155,3,1999,Beaconsfield,810000
 159,3,2009,Duncraig,610000
-125,3,1993,Daglish,660000
 167,3,1993,Floreat,875000
 154,4,2005,Coolbellup,480000
 153,3,1992,Salter Point,690000
@@ -24147,7 +24125,6 @@ area_habitavel,quartos,ano_construcao,bairro,preco
 91,4,1993,Warnbro,295000
 185,4,2002,Yangebup,575000
 198,4,1998,Jandakot,560000
-195,4,2005,South Lake,470000
 108,3,1978,Lesmurdie,515000
 400,3,2009,Rockingham,620000
 82,3,1975,Karawara,245000
@@ -24234,7 +24211,6 @@ area_habitavel,quartos,ano_construcao,bairro,preco
 119,3,1975,Ferndale,375000
 237,3,2000,Ascot,800000
 226,4,2006,Singleton,475000
-112,3,2015,Kwinana Town Centre,155042
 95,3,1965,Koongamia,270000
 212,4,1982,Edgewater,570000
 223,4,1998,Mundaring,670000
@@ -25362,7 +25338,6 @@ area_habitavel,quartos,ano_construcao,bairro,preco
 223,5,2007,Hamersley,700000
 159,3,2003,Bennett Springs,416000
 223,4,2002,Pearsall,628000
-85,3,1973,Girrawheen,255000
 255,4,1995,Coogee,750000
 128,3,1970,Hamersley,540000
 225,4,1973,Greenwood,325000
@@ -28000,7 +27975,6 @@ area_habitavel,quartos,ano_construcao,bairro,preco
 145,4,1980,Warnbro,299000
 217,4,1994,Casuarina,700000
 312,3,2011,Harrisdale,865000
-156,3,2015,Karnup,405000
 213,4,2000,Singleton,665000
 154,4,2003,Henley Brook,455000
 123,3,1988,Bibra Lake,450000
@@ -29335,7 +29309,6 @@ area_habitavel,quartos,ano_construcao,bairro,preco
 265,5,2003,Southern River,690000
 146,3,2011,Champion Lakes,435000
 240,4,2005,Aubin Grove,702499
-111,3,1972,Lockridge,300000
 216,4,2006,Cardup,835000
 145,4,1991,Singleton,429000
 318,4,2005,Coogee,1160000
@@ -29928,7 +29901,6 @@ area_habitavel,quartos,ano_construcao,bairro,preco
 165,4,1990,High Wycombe,380000
 429,4,2004,Menora,2150000
 110,4,1995,Quinns Rocks,390000
-162,3,2002,Cottesloe,1900000
 142,4,1999,South Guildford,550000
 167,7,1998,Craigie,420000
 306,4,2008,Jindalee,660000
