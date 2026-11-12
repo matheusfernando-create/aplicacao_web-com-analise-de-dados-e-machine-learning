@@ -85,7 +85,7 @@
   <h2>Gráficos</h2>
   {% for img in imagens %}
   <figure class="grafico">
-    <img src="data:image/png;base64,{{ img.base64 }}" alt="{{ img.titulo }}">
+    {% if img.base64 %}<img src="data:image/png;base64,{{ img.base64 }}" alt="{{ img.titulo }}">{% endif %}
     <figcaption><strong>{{ img.titulo }}.</strong> {{ img.texto }}</figcaption>
   </figure>
   {% endfor %}

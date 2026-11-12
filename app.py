@@ -14,8 +14,10 @@ import graficos
 
 BASE = Path(__file__).parent
 PASTA_UPLOADS = BASE / "uploads"
-ULTIMO_CSV = PASTA_UPLOADS / "ultimo_limpo.csv"             
+ULTIMO_CSV = PASTA_UPLOADS / "ultimo_limpo.csv"            
 ULTIMO_RELATORIO = PASTA_UPLOADS / "ultimo_relatorio.json"  
+PASTA_GRAFICOS = PASTA_UPLOADS / "graficos"                    
+
 CAMINHO_MODELO = BASE / "models" / "modelo.joblib"
 CAMINHO_METRICAS = BASE / "models" / "metricas.json"
 
@@ -26,7 +28,7 @@ LIMITES = {
 }
 
 app = Flask(__name__)
-app.config["MAX_CONTENT_LENGTH"] = 20 * 1024 * 1024  # 20 MB
+app.config["MAX_CONTENT_LENGTH"] = 20 * 1024 * 1024 
 app.secret_key = os.environ.get("SECRET_KEY", "chave-de-desenvolvimento")  
 
 app.jinja_env.filters["moeda"] = dados.formatar_moeda
@@ -64,6 +66,7 @@ def processar(conteudo, origem):
         return [f"Depois da limpeza {'sobrou só 1 registro válido' if sobra == 1 else f'sobraram só {sobra} registros válidos'} "
                 f"(mínimo: {dados.MINIMO_REGISTROS}). Confira os valores de área, quartos, ano e preço."]
     salvar_resultado(df_limpo, relatorio, origem, conteudo_original=conteudo)
+    graficos.gerar(df_limpo, PASTA_GRAFICOS)  # gera os gráficos uma vez, no upload
     return []
 
 # Modelo: carregar o que o treinar.py gerou e fazer a previsão
@@ -191,14 +194,10 @@ def analise():
     df = pd.read_csv(ULTIMO_CSV)
     relatorio = json.loads(ULTIMO_RELATORIO.read_text(encoding="utf-8"))
     resultado = dados.analisar(df)
-    imagens = [
-        {"titulo": "Distribuição dos preços", "base64": graficos.grafico_distribuicao(df),
-         "texto": resultado["interpretacoes"]["distribuicao"]},
-        {"titulo": "Comparação entre bairros", "base64": graficos.grafico_comparacao(df),
-         "texto": resultado["interpretacoes"]["comparacao"]},
-        {"titulo": "Relação entre área e preço", "base64": graficos.grafico_relacao(df),
-         "texto": resultado["interpretacoes"]["relacao"]},
-    ]
+    imagens = graficos.carregar(PASTA_GRAFICOS)
+    if not imagens:  
+        graficos.gerar(df, PASTA_GRAFICOS)
+        imagens = graficos.carregar(PASTA_GRAFICOS)
     return render_template(
         "analise.html", relatorio=relatorio, amostra=df.head(10).to_dict("records"),
         colunas=list(df.columns), resultado=resultado, imagens=imagens,
@@ -216,7 +215,7 @@ def previsao():
         if not erros:
             try:
                 previsto = round(prever(valores, info["colunas_x"]), -3)  
-            except Exception: 
+            except Exception:  
                 erros.append("Não foi possível usar o modelo salvo. Rode python treinar.py de novo e reinicie o servidor.")
 
     return render_template(
