@@ -23,9 +23,9 @@ python modelo.py             # teste rápido de previsão
 
 ## Base usada
 
-- **Perth House Prices** (Perth, Austrália), vendas de 2013 a 2020. Os preços estão em **dólar australiano (AUD)**.
+- **Perth House Prices** (Perth, Austrália), vendas de 1988 a 2020 (92% entre 2013 e 2020). Os preços estão em **dólar australiano (AUD)**.
 - Arquivo de entrada: `perth_house_prices_tratado.csv`, gerado por `tratamento_dados.py`.
-- Antes da divisão, `treinar.py` remove **28 linhas duplicadas**. Assim a mesma casa não aparece no treino e no teste ao mesmo tempo.
+- As **28 linhas duplicadas** são removidas em `tratamento_dados.py` (e `treinar.py` confere de novo antes da divisão). Assim a mesma casa não aparece no treino e no teste ao mesmo tempo.
 - **Registros usados: 30.463.**
 
 ## X e y
@@ -93,7 +93,7 @@ O `min_samples_leaf` (número mínimo de casas em cada folha) foi escolhido com 
 ## Limitações
 
 - O modelo usa só 4 variáveis. Tamanho do terreno, banheiros, garagem e distância do centro ficaram de fora, conforme o tema.
-- Mistura vendas de 2013 a 2020 sem considerar a data, e os preços mudam com o tempo.
+- Mistura vendas de 1988 a 2020 (92% entre 2013 e 2020) sem considerar a data, e os preços mudam com o tempo.
 - O modelo serve apenas para Perth e para bairros que existem na base. O formulário só aceita bairros e faixas de valores vistos no treino.
 - Bairros com poucas vendas têm estimativas menos confiáveis.
 - O modelo é **fixo**: o CSV enviado na aplicação atualiza as análises e os gráficos, mas a previsão usa o modelo treinado com a base indicada em `models/metricas.json`.
