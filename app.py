@@ -3,20 +3,42 @@ import os
 from datetime import datetime
 from pathlib import Path
 
+import joblib
+import pandas as pd
+import sklearn
 from flask import Flask, flash, redirect, render_template, request, url_for
 from werkzeug.utils import secure_filename
 
 import dados
+import graficos
 
 BASE = Path(__file__).parent
 PASTA_UPLOADS = BASE / "uploads"
 ULTIMO_CSV = PASTA_UPLOADS / "ultimo_limpo.csv"             
 ULTIMO_RELATORIO = PASTA_UPLOADS / "ultimo_relatorio.json"  
+CAMINHO_MODELO = BASE / "models" / "modelo.joblib"
+CAMINHO_METRICAS = BASE / "models" / "metricas.json"
+
+LIMITES = {
+    "area_habitavel": (30, 1000),
+    "quartos": (1, 10),
+    "ano_construcao": (1800, datetime.now().year),
+}
 
 app = Flask(__name__)
-app.config["MAX_CONTENT_LENGTH"] = 20 * 1024 * 1024  
-app.secret_key = os.environ.get("SECRET_KEY", "chave-de-desenvolvimento") 
+app.config["MAX_CONTENT_LENGTH"] = 20 * 1024 * 1024  # 20 MB
+app.secret_key = os.environ.get("SECRET_KEY", "chave-de-desenvolvimento")  
 
+app.jinja_env.filters["moeda"] = dados.formatar_moeda
+app.jinja_env.filters["numero"] = dados.formatar_numero
+
+
+@app.context_processor
+def estado_da_sessao():
+    """Variáveis disponíveis em todos os templates (usadas na barra de etapas)."""
+    return {"tem_dados": ULTIMO_CSV.exists()}
+
+# Upload: guardar e processar o CSV
 
 def salvar_resultado(df_limpo, relatorio, origem, conteudo_original=None):
     """Guarda o CSV original sem alterações e o resultado da limpeza em uploads/."""
@@ -44,6 +66,91 @@ def processar(conteudo, origem):
     salvar_resultado(df_limpo, relatorio, origem, conteudo_original=conteudo)
     return []
 
+# Modelo: carregar o que o treinar.py gerou e fazer a previsão
+
+_cache = {"data_arquivo": None, "pipeline": None}
+
+
+def carregar_info():
+    """Lê models/metricas.json. Retorna None se o treinar.py ainda não foi executado."""
+    if not (CAMINHO_MODELO.exists() and CAMINHO_METRICAS.exists()):
+        return None
+    return json.loads(CAMINHO_METRICAS.read_text(encoding="utf-8"))
+
+
+def carregar_pipeline():
+    """Carrega o pipeline salvo (pré-processamento + modelo). Recarrega se o arquivo mudar."""
+    data_arquivo = CAMINHO_MODELO.stat().st_mtime
+    if _cache["pipeline"] is None or _cache["data_arquivo"] != data_arquivo:
+        _cache["pipeline"] = joblib.load(CAMINHO_MODELO)
+        _cache["data_arquivo"] = data_arquivo
+    return _cache["pipeline"]
+
+
+def prever(valores, colunas_x):
+    """Monta uma linha com as MESMAS colunas e ordem do treino e pede o preço ao modelo."""
+    linha = pd.DataFrame([valores])[colunas_x]
+    return max(float(carregar_pipeline().predict(linha)[0]), 0.0)
+
+
+def resumir_modelo(info):
+    """Frase explicando a escolha do modelo, calculada a partir do metricas.json."""
+    resultados = info["resultados"]
+    escolhido = info["modelo_escolhido"]
+    mae_teste = resultados[escolhido]["teste"]["mae"]
+    mae_treino = resultados[escolhido]["treino"]["mae"]
+    texto = (f"{escolhido} teve o menor MAE no conjunto de teste ({dados.formatar_moeda(mae_teste)}) "
+             "e foi escolhido para a aplicação. ")
+    baseline = [v["teste"]["mae"] for nome, v in resultados.items() if nome.startswith("Baseline")]
+    if baseline:
+        melhora = (1 - mae_teste / baseline[0]) * 100
+        texto += (f"Ele erra {dados.formatar_numero(melhora)}% menos que o baseline, que sempre prevê a mediana "
+                  f"({dados.formatar_moeda(baseline[0])}). ")
+    texto += (f"A diferença entre o erro no teste e no treino é de {dados.formatar_moeda(abs(mae_teste - mae_treino))}: "
+              "quanto menor, menos o modelo decorou o treino (overfitting).")
+    return texto
+
+
+def validar_formulario(form, info):
+    """Converte e valida os campos. Retorna (valores, erros, avisos)."""
+    erros, avisos, valores = [], [], {}
+    rotulos = {"area_habitavel": "Área habitável", "quartos": "Quartos", "ano_construcao": "Ano de construção"}
+
+    for campo, rotulo in rotulos.items():
+        bruto = (form.get(campo) or "").strip().replace(",", ".")
+        minimo, maximo = LIMITES[campo]
+        if not bruto:
+            erros.append(f"{rotulo}: preencha o campo.")
+            continue
+        try:
+            numero = float(bruto)
+        except ValueError:
+            erros.append(f"{rotulo}: digite apenas números.")
+            continue
+        if campo != "area_habitavel" and numero != int(numero):
+            erros.append(f"{rotulo}: use um número inteiro.")
+            continue
+        if not minimo <= numero <= maximo:
+            erros.append(f"{rotulo}: informe um valor entre {minimo} e {maximo}.")
+            continue
+        valores[campo] = numero if campo == "area_habitavel" else int(numero)
+        faixa = info["faixas_validas"][campo]
+        if not faixa["min"] <= numero <= faixa["max"]:
+            avisos.append(f"{rotulo} fora da faixa vista no treino ({dados.formatar_numero(faixa['min'], 0, False)} a "
+                          f"{dados.formatar_numero(faixa['max'], 0, False)}): a previsão é menos confiável.")
+
+    bairro = (form.get("bairro") or "").strip()
+    por_nome = {b.lower(): b for b in info["bairros"]}
+    if not bairro:
+        erros.append("Bairro: escolha um bairro da lista.")
+    elif bairro.lower() not in por_nome:
+        erros.append("Bairro: não encontramos esse bairro. Escolha um da lista de sugestões.")
+    else:
+        valores["bairro"] = por_nome[bairro.lower()]
+
+    return valores, erros, avisos
+
+# Rotas
 
 @app.route("/")
 def index():
@@ -63,7 +170,7 @@ def upload():
     if erros:
         return render_template("index.html", erros=erros), 400
     flash(f"Arquivo '{arquivo.filename}' enviado e analisado.", "ok")
-    return redirect(url_for("index"))  # no passo 4 trocar por url_for("analise")
+    return redirect(url_for("analise"))
 
 
 @app.route("/usar-exemplo", methods=["POST"])
@@ -72,7 +179,64 @@ def usar_exemplo():
     if erros:
         return render_template("index.html", erros=erros), 400
     flash("CSV de exemplo carregado.", "ok")
-    return redirect(url_for("index"))  # no passo 4 trocar por url_for("analise")
+    return redirect(url_for("analise"))
+
+
+@app.route("/analise")
+def analise():
+    if not ULTIMO_CSV.exists():
+        flash("Envie um CSV (ou use o de exemplo) para ver a análise.", "aviso")
+        return redirect(url_for("index"))
+
+    df = pd.read_csv(ULTIMO_CSV)
+    relatorio = json.loads(ULTIMO_RELATORIO.read_text(encoding="utf-8"))
+    resultado = dados.analisar(df)
+    imagens = [
+        {"titulo": "Distribuição dos preços", "base64": graficos.grafico_distribuicao(df),
+         "texto": resultado["interpretacoes"]["distribuicao"]},
+        {"titulo": "Comparação entre bairros", "base64": graficos.grafico_comparacao(df),
+         "texto": resultado["interpretacoes"]["comparacao"]},
+        {"titulo": "Relação entre área e preço", "base64": graficos.grafico_relacao(df),
+         "texto": resultado["interpretacoes"]["relacao"]},
+    ]
+    return render_template(
+        "analise.html", relatorio=relatorio, amostra=df.head(10).to_dict("records"),
+        colunas=list(df.columns), resultado=resultado, imagens=imagens,
+    )
+
+
+@app.route("/previsao", methods=["GET", "POST"])
+def previsao():
+    info = carregar_info()
+    valores_form, erros, avisos, previsto = {}, [], [], None
+
+    if info is not None and request.method == "POST":
+        valores_form = request.form.to_dict()
+        valores, erros, avisos = validar_formulario(request.form, info)
+        if not erros:
+            try:
+                previsto = round(prever(valores, info["colunas_x"]), -3)  
+            except Exception: 
+                erros.append("Não foi possível usar o modelo salvo. Rode python treinar.py de novo e reinicie o servidor.")
+
+    return render_template(
+        "previsao.html", info=info, form=valores_form, erros=erros, avisos=avisos, previsto=previsto,
+        limites=LIMITES, resumo=resumir_modelo(info) if info else None,
+        versao_diferente=bool(info) and info.get("versao_scikit_learn") != sklearn.__version__,
+        versao_atual=sklearn.__version__,
+    )
+
+
+@app.errorhandler(413)
+def arquivo_grande(_erro):
+    flash("O arquivo é maior que 20 MB. Envie um arquivo menor.", "aviso")
+    return redirect(url_for("index"))
+
+
+@app.errorhandler(404)
+def nao_encontrada(_erro):
+    flash("Página não encontrada.", "aviso")
+    return redirect(url_for("index"))
 
 
 if __name__ == "__main__":

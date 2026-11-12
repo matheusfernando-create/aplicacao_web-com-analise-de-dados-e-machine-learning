@@ -13,6 +13,13 @@
   <header class="topo">
     <div class="miolo topo-conteudo">
       <a class="marca" href="{{ url_for('index') }}">Imóveis em Perth</a>
+      <nav aria-label="Etapas">
+        <ol class="etapas">
+          <li><a href="{{ url_for('index') }}" {% if request.endpoint == 'index' %}aria-current="page"{% endif %}><span class="n">1</span>Enviar dados</a></li>
+          <li><a href="{{ url_for('analise') }}" {% if request.endpoint == 'analise' %}aria-current="page"{% endif %} class="{{ '' if tem_dados else 'inativa' }}"><span class="n">2</span>Análise</a></li>
+          <li><a href="{{ url_for('previsao') }}" {% if request.endpoint == 'previsao' %}aria-current="page"{% endif %}><span class="n">3</span>Previsão</a></li>
+        </ol>
+      </nav>
     </div>
   </header>
 
@@ -26,7 +33,7 @@
   </main>
 
   <footer class="miolo rodape">
-    Trabalho final de Tópicos Especiais em Ciência da Computação.
+    Trabalho final de Tópicos Especiais em Ciência da Computação. Preços em dólares australianos (A$).
   </footer>
 </body>
 </html>
