@@ -1,0 +1,108 @@
+:root {
+  --tinta: #1F2D36;
+  --tinta-suave: #52626B;
+  --mar: #0E6E8C;
+  --mar-escuro: #0A5870;
+  --fundo: #EEF3F2;
+  --papel: #FFFFFF;
+  --linha: #D3DEDC;
+  --ambar: #C9772B;
+  --erro: #A8352B;
+  --erro-fundo: #FBEDEB;
+  --aviso-fundo: #FDF3E4;
+  --ok-fundo: #E3F2EE;
+  --fonte-titulo: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --fonte-texto: "Public Sans", "Segoe UI", system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--fundo);
+  color: var(--tinta);
+  font-family: var(--fonte-texto);
+  line-height: 1.55;
+}
+
+.miolo { max-width: 1040px; margin: 0 auto; padding: 0 20px; }
+main.miolo { padding-top: 28px; padding-bottom: 40px; }
+
+h1, h2 { font-family: var(--fonte-titulo); line-height: 1.15; margin: 0 0 12px; }
+h1 { font-size: 2rem; }
+h2 { font-size: 1.35rem; margin-top: 36px; }
+p { max-width: 70ch; }
+.lead { font-size: 1.05rem; color: var(--tinta-suave); margin-bottom: 24px; }
+.nota, .dica { font-size: 0.88rem; color: var(--tinta-suave); }
+code { background: #E1EAE8; padding: 1px 5px; border-radius: 3px; font-size: 0.9em; }
+
+/* Topo e etapas */
+.topo { background: var(--papel); border-bottom: 1px solid var(--linha); }
+.topo-conteudo { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 24px; padding-top: 12px; padding-bottom: 12px; }
+.marca { font-family: var(--fonte-titulo); font-weight: 700; font-size: 1.2rem; color: var(--mar); text-decoration: none; }
+.etapas { list-style: none; display: flex; gap: 4px; margin: 0; padding: 0; }
+.etapas a { display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 6px; color: var(--tinta); text-decoration: none; font-weight: 500; }
+.etapas a:hover { background: var(--fundo); }
+.etapas a[aria-current="page"] { background: var(--mar); color: #fff; }
+.etapas a.inativa { color: var(--tinta-suave); }
+.etapas .n { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid currentColor; font-size: 0.78rem; }
+
+/* Avisos */
+.aviso { padding: 12px 16px; border-radius: 6px; border-left: 4px solid; margin: 0 0 20px; max-width: none; }
+.aviso ul { margin: 6px 0 0; padding-left: 20px; }
+.aviso-ok { background: var(--ok-fundo); border-color: var(--mar); }
+.aviso-aviso { background: var(--aviso-fundo); border-color: var(--ambar); }
+.aviso-erro { background: var(--erro-fundo); border-color: var(--erro); }
+
+/* Formulários e botões */
+.duas-colunas { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
+.formulario { display: flex; flex-direction: column; gap: 6px; }
+.formulario label { font-weight: 600; margin-top: 10px; }
+input[type="text"], input[type="file"] { width: 100%; padding: 10px 12px; border: 1.5px solid var(--linha); border-radius: 6px; background: var(--papel); font: inherit; color: inherit; }
+.botao { display: inline-block; align-self: flex-start; margin-top: 16px; padding: 11px 20px; border: 2px solid var(--mar); border-radius: 6px; background: var(--mar); color: #fff; font: inherit; font-weight: 600; text-decoration: none; cursor: pointer; }
+.botao:hover { background: var(--mar-escuro); border-color: var(--mar-escuro); }
+.botao-secundario { background: transparent; color: var(--mar); }
+.botao-secundario:hover { background: var(--mar); color: #fff; }
+a:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid var(--ambar); outline-offset: 2px; }
+
+/* Tabelas */
+.rolagem { overflow-x: auto; }
+.tabela { width: 100%; border-collapse: collapse; background: var(--papel); font-size: 0.92rem; }
+.tabela caption { text-align: left; font-weight: 600; padding: 0 0 6px; }
+.tabela th, .tabela td { padding: 8px 12px; border-bottom: 1px solid var(--linha); text-align: left; vertical-align: top; }
+.tabela thead th { background: #E1EAE8; font-weight: 600; }
+.tabela tr.escolhido td { background: var(--ok-fundo); font-weight: 600; }
+
+/* Resumo da análise */
+.resumo { display: flex; flex-wrap: wrap; gap: 0; margin: 0 0 8px; border: 1px solid var(--linha); border-radius: 6px; background: var(--papel); }
+.resumo div { flex: 1 1 160px; padding: 14px 18px; border-right: 1px solid var(--linha); }
+.resumo div:last-child { border-right: 0; }
+.resumo dt { font-size: 0.85rem; color: var(--tinta-suave); }
+.resumo dd { margin: 2px 0 0; font-family: var(--fonte-titulo); font-size: 1.6rem; font-weight: 700; }
+
+.achados { padding-left: 20px; max-width: 75ch; }
+.achados li { margin-bottom: 8px; }
+
+.grafico { margin: 0 0 32px; background: var(--papel); border: 1px solid var(--linha); border-radius: 6px; padding: 16px; }
+.grafico img { display: block; max-width: 100%; height: auto; margin: 0 auto; }
+.grafico figcaption { margin-top: 12px; max-width: 75ch; }
+.proximo { margin-top: 8px; }
+
+/* Resultado da previsão: placa de imobiliária */
+.previsao-topo { margin-bottom: 8px; }
+.placa { background: var(--mar); color: #fff; border-radius: 6px; padding: 24px; border-bottom: 8px solid var(--ambar); }
+.placa-rotulo { margin: 0; font-weight: 600; opacity: 0.9; }
+.placa-valor { margin: 4px 0 12px; font-family: var(--fonte-titulo); font-size: 3rem; font-weight: 700; line-height: 1.1; }
+.placa-nota { margin: 0; font-size: 0.92rem; opacity: 0.95; }
+.placa-vazia { background: var(--papel); color: var(--tinta-suave); border: 2px dashed var(--linha); border-bottom: 2px dashed var(--linha); }
+.placa-vazia .placa-nota { opacity: 1; }
+.placa + .aviso { margin-top: 16px; }
+
+.rodape { padding-top: 16px; padding-bottom: 32px; color: var(--tinta-suave); font-size: 0.85rem; }
+
+@media (max-width: 760px) {
+  .duas-colunas { grid-template-columns: 1fr; }
+  h1 { font-size: 1.6rem; }
+  .placa-valor { font-size: 2.3rem; }
+  .resumo div { border-right: 0; border-bottom: 1px solid var(--linha); }
+}

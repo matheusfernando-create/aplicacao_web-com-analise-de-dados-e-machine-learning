@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block conteudo %}
+<h1>Envie os dados dos imóveis</h1>
+<p class="lead">O CSV enviado alimenta a análise e os gráficos. A previsão usa o modelo treinado com a base de exemplo.</p>
+
+{% if erros %}
+<div class="aviso aviso-erro" role="alert">
+  <strong>Não foi possível usar o arquivo:</strong>
+  <ul>{% for erro in erros %}<li>{{ erro }}</li>{% endfor %}</ul>
+</div>
+{% endif %}
+
+<div class="duas-colunas">
+  <section>
+    <h2>Seu arquivo</h2>
+    <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data" class="formulario">
+      <label for="arquivo">Arquivo CSV</label>
+      <input type="file" id="arquivo" name="arquivo" accept=".csv" required>
+      <button type="submit" class="botao">Enviar e analisar</button>
+    </form>
+
+    <h2>Sem arquivo à mão?</h2>
+    <form action="{{ url_for('usar_exemplo') }}" method="post">
+      <p>Use a base de exemplo, com vendas de imóveis em Perth já tratadas.</p>
+      <button type="submit" class="botao botao-secundario">Usar o CSV de exemplo</button>
+    </form>
+  </section>
+
+  <section>
+    <h2>Formato esperado</h2>
+    <p>O CSV precisa ter cabeçalho e estas colunas, separadas por vírgula ou ponto e vírgula. Colunas extras são ignoradas.</p>
+    <div class="rolagem">
+      <table class="tabela">
+        <thead><tr><th>Coluna</th><th>Conteúdo</th><th>Exemplo</th></tr></thead>
+        <tbody>
+          <tr><td><code>area_habitavel</code></td><td>Área construída, em m² (mínimo 30)</td><td>160</td></tr>
+          <tr><td><code>quartos</code></td><td>Número de quartos</td><td>4</td></tr>
+          <tr><td><code>ano_construcao</code></td><td>Ano de construção</td><td>2003</td></tr>
+          <tr><td><code>bairro</code></td><td>Nome do bairro (suburb)</td><td>South Lake</td></tr>
+          <tr><td><code>preco</code></td><td>Preço de venda, em A$</td><td>565000</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="nota">O arquivo bruto do Kaggle precisa passar antes pelo <code>tratamento_dados.py</code>.</p>
+  </section>
+</div>
+{% endblock %}

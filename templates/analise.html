@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block titulo %}Análise dos dados{% endblock %}
+{% block conteudo %}
+<h1>Análise dos dados</h1>
+<p class="lead">Arquivo <strong>{{ relatorio.origem }}</strong>, processado em {{ relatorio.processado_em }}.</p>
+
+<dl class="resumo">
+  <div><dt>Registros enviados</dt><dd>{{ relatorio.registros_antes | numero }}</dd></div>
+  <div><dt>Registros após a limpeza</dt><dd>{{ relatorio.registros_depois | numero }}</dd></div>
+  <div><dt>Removidos</dt><dd>{{ (relatorio.registros_antes - relatorio.registros_depois) | numero }}</dd></div>
+  <div><dt>Colunas usadas</dt><dd>{{ colunas | length }}</dd></div>
+</dl>
+
+<section>
+  <h2>Amostra dos dados limpos</h2>
+  <div class="rolagem">
+    <table class="tabela">
+      <thead><tr>{% for c in colunas %}<th>{{ c }}</th>{% endfor %}</tr></thead>
+      <tbody>
+        {% for linha in amostra %}
+        <tr>
+          <td>{{ linha.area_habitavel | numero(0) }}</td>
+          <td>{{ linha.quartos }}</td>
+          <td>{{ linha.ano_construcao }}</td>
+          <td>{{ linha.bairro }}</td>
+          <td>{{ linha.preco | moeda }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <h2>Diagnóstico e tratamento</h2>
+  <div class="duas-colunas">
+    <div class="rolagem">
+      <table class="tabela">
+        <caption>Como o arquivo chegou</caption>
+        <thead><tr><th>Coluna</th><th>Tipo</th><th>Ausentes</th></tr></thead>
+        <tbody>
+          {% for d in relatorio.diagnostico %}
+          <tr><td><code>{{ d.coluna }}</code></td><td>{{ d.tipo }}</td><td>{{ d.ausentes | numero }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="rolagem">
+      <table class="tabela">
+        <caption>O que foi feito</caption>
+        <thead><tr><th>Etapa</th><th>Detalhe</th><th>Linhas removidas</th></tr></thead>
+        <tbody>
+          {% for p in relatorio.passos %}
+          <tr><td>{{ p.etapa }}</td><td>{{ p.detalhe }}</td><td>{{ p.removidas | numero }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <p class="nota">O arquivo original fica guardado, sem alterações, na pasta <code>uploads/</code>.</p>
+</section>
+
+<section>
+  <h2>Estatísticas descritivas</h2>
+  <div class="rolagem">
+    <table class="tabela">
+      <thead><tr><th>Variável</th><th>Média</th><th>Mediana</th><th>Desvio padrão</th><th>Mínimo</th><th>Máximo</th></tr></thead>
+      <tbody>
+        {% for e in resultado.estatisticas %}
+        <tr><td>{{ e.coluna }}</td><td>{{ e.media }}</td><td>{{ e.mediana }}</td><td>{{ e.desvio }}</td><td>{{ e.minimo }}</td><td>{{ e.maximo }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <h2>O que os dados mostram</h2>
+  <ul class="achados">
+    {% for achado in resultado.achados %}<li>{{ achado }}</li>{% endfor %}
+  </ul>
+</section>
+
+<section>
+  <h2>Gráficos</h2>
+  {% for img in imagens %}
+  <figure class="grafico">
+    {% if img.base64 %}<img src="data:image/png;base64,{{ img.base64 }}" alt="{{ img.titulo }}">{% endif %}
+    <figcaption><strong>{{ img.titulo }}.</strong> {{ img.texto }}</figcaption>
+  </figure>
+  {% endfor %}
+</section>
+
+<p class="proximo"><a class="botao" href="{{ url_for('previsao') }}">Ir para a previsão</a></p>
+{% endblock %}

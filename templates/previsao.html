@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block titulo %}Previsão de preço{% endblock %}
+{% block conteudo %}
+<h1>Estime o preço de um imóvel</h1>
+
+{% if info is none %}
+<div class="aviso aviso-aviso" role="alert">
+  O modelo ainda não foi treinado. No terminal, rode <code>python treinar.py</code> e recarregue esta página.
+</div>
+{% else %}
+<p class="lead">Informe as características do imóvel. O modelo calcula o preço de venda esperado.</p>
+
+{% if versao_diferente %}
+<div class="aviso aviso-aviso" role="alert">
+  O modelo foi treinado com o scikit-learn {{ info.versao_scikit_learn }}, e esta máquina usa a {{ versao_atual }}.
+  Se a previsão falhar, rode <code>python treinar.py</code> de novo.
+</div>
+{% endif %}
+
+{% if erros %}
+<div class="aviso aviso-erro" role="alert">
+  <strong>Corrija os campos abaixo:</strong>
+  <ul>{% for erro in erros %}<li>{{ erro }}</li>{% endfor %}</ul>
+</div>
+{% endif %}
+
+{% set escolhido = info.resultados[info.modelo_escolhido] %}
+
+<div class="duas-colunas previsao-topo">
+  <form method="post" action="{{ url_for('previsao') }}" class="formulario" novalidate>
+    <label for="area_habitavel">Área habitável (m²)</label>
+    <input type="text" inputmode="decimal" id="area_habitavel" name="area_habitavel" value="{{ form.get('area_habitavel', '') }}" placeholder="Ex.: 160">
+    <span class="dica">Entre {{ limites.area_habitavel[0] }} e {{ limites.area_habitavel[1] }} m²</span>
+
+    <label for="quartos">Quartos</label>
+    <input type="text" inputmode="numeric" id="quartos" name="quartos" value="{{ form.get('quartos', '') }}" placeholder="Ex.: 4">
+    <span class="dica">Entre {{ limites.quartos[0] }} e {{ limites.quartos[1] }}</span>
+
+    <label for="ano_construcao">Ano de construção</label>
+    <input type="text" inputmode="numeric" id="ano_construcao" name="ano_construcao" value="{{ form.get('ano_construcao', '') }}" placeholder="Ex.: 2003">
+    <span class="dica">Entre {{ limites.ano_construcao[0] }} e {{ limites.ano_construcao[1] }}</span>
+
+    <label for="bairro">Bairro</label>
+    <input type="text" id="bairro" name="bairro" list="lista-bairros" value="{{ form.get('bairro', '') }}" placeholder="Comece a digitar" autocomplete="off">
+    <datalist id="lista-bairros">
+      {% for b in info.bairros %}<option value="{{ b }}">{% endfor %}
+    </datalist>
+    <span class="dica">Escolha um dos {{ info.bairros | length }} bairros da lista</span>
+
+    <button type="submit" class="botao">Calcular preço</button>
+  </form>
+
+  <div>
+    {% if previsto is not none %}
+    <div class="placa" role="status">
+      <p class="placa-rotulo">Preço estimado</p>
+      <p class="placa-valor">{{ previsto | moeda }}</p>
+      <p class="placa-nota">Em média, o modelo ({{ info.modelo_escolhido }}) erra {{ escolhido.teste.mae | moeda }} para mais ou para menos nos dados de teste. Use como referência, não como avaliação oficial.</p>
+    </div>
+    {% for aviso in avisos %}<p class="aviso aviso-aviso">{{ aviso }}</p>{% endfor %}
+    {% else %}
+    <div class="placa placa-vazia">
+      <p class="placa-rotulo">Preço estimado</p>
+      <p class="placa-nota">Preencha o formulário e clique em calcular. O resultado aparece aqui.</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<section>
+  <h2>Como o modelo foi escolhido</h2>
+  <p>Treinado com <code>{{ info.base_treino }}</code>: {{ info.registros_usados | numero }} imóveis, sendo {{ info.tamanho_treino | numero }} para treino e {{ info.tamanho_teste | numero }} para teste
+     (divisão {{ ((1 - info.proporcao_teste) * 100) | round | int }}/{{ (info.proporcao_teste * 100) | round | int }}, <code>random_state={{ info.random_state }}</code>), em {{ info.data_treino }}.
+     Se você enviar outro CSV, as análises mudam, mas o modelo continua sendo este.</p>
+  <div class="rolagem">
+    <table class="tabela">
+      <caption>Todos os modelos usaram a mesma divisão e a mesma métrica</caption>
+      <thead>
+        <tr><th>Modelo</th><th>MAE no treino</th><th>MAE na validação cruzada</th><th>MAE no teste</th><th>RMSE no teste</th><th>R² no teste</th></tr>
+      </thead>
+      <tbody>
+        {% for nome, r in info.resultados.items() %}
+        <tr {% if nome == info.modelo_escolhido %}class="escolhido"{% endif %}>
+          <td>{{ nome }}{% if nome == info.modelo_escolhido %} (escolhido){% endif %}</td>
+          <td>{{ r.treino.mae | moeda }}</td>
+          <td>{{ r.validacao_cruzada_treino.mae | moeda }}</td>
+          <td>{{ r.teste.mae | moeda }}</td>
+          <td>{{ r.teste.rmse | moeda }}</td>
+          <td>{{ (0 if r.teste.r2 | abs < 0.005 else r.teste.r2) | numero(2) }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <p><strong>MAE</strong> é o erro absoluto médio, na mesma unidade do preço: quanto menor, melhor. <strong>RMSE</strong> é parecido, mas pesa mais os erros grandes. <strong>R²</strong> indica quanto da variação do preço o modelo explica (1 é o máximo).</p>
+  <p>{{ resumo }}</p>
+
+  <h2>Onde o modelo erra mais</h2>
+  <div class="rolagem">
+    <table class="tabela">
+      <caption>Erro do modelo escolhido por faixa de preço real (dados de teste)</caption>
+      <thead><tr><th>Faixa de preço</th><th>Imóveis</th><th>Preço médio</th><th>MAE</th><th>Erro em relação ao preço</th></tr></thead>
+      <tbody>
+        {% for f in info.erro_por_faixa_de_preco %}
+        <tr>
+          <td>{{ f.faixa }}</td>
+          <td>{{ f.casas | numero }}</td>
+          <td>{{ f.preco_medio | moeda }}</td>
+          <td>{{ f.mae | moeda }}</td>
+          <td>{{ f.erro_percentual | numero(1) }}%</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

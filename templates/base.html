@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}Preço de imóveis em Perth{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=Public+Sans:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="topo">
+    <div class="miolo topo-conteudo">
+      <a class="marca" href="{{ url_for('index') }}">Imóveis em Perth</a>
+      <nav aria-label="Etapas">
+        <ol class="etapas">
+          <li><a href="{{ url_for('index') }}" {% if request.endpoint == 'index' %}aria-current="page"{% endif %}><span class="n">1</span>Enviar dados</a></li>
+          <li><a href="{{ url_for('analise') }}" {% if request.endpoint == 'analise' %}aria-current="page"{% endif %} class="{{ '' if tem_dados else 'inativa' }}"><span class="n">2</span>Análise</a></li>
+          <li><a href="{{ url_for('previsao') }}" {% if request.endpoint == 'previsao' %}aria-current="page"{% endif %}><span class="n">3</span>Previsão</a></li>
+        </ol>
+      </nav>
+    </div>
+  </header>
+
+  <main class="miolo">
+    {% with mensagens = get_flashed_messages(with_categories=true) %}
+      {% for categoria, texto in mensagens %}
+        <p class="aviso aviso-{{ categoria }}" role="status">{{ texto }}</p>
+      {% endfor %}
+    {% endwith %}
+    {% block conteudo %}{% endblock %}
+  </main>
+
+  <footer class="miolo rodape">
+    Trabalho final de Tópicos Especiais em Ciência da Computação. Preços em dólares australianos (A$).
+  </footer>
+</body>
+</html>
