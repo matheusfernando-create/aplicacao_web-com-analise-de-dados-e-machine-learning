@@ -1,27 +1,32 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block titulo %}Preço de imóveis em Perth{% endblock %}</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=Public+Sans:wght@400;500;600&display=swap">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}Preço de imóveis em Perth{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=Public+Sans:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <header class="topo">
-        <div class="miolo topo-conteudo">
-            <a class="marca" href="{{url_for('index') }}">Imóveis em Perth</a>
-        </div>
-    </header>
+  <header class="topo">
+    <div class="miolo topo-conteudo">
+      <a class="marca" href="{{ url_for('index') }}">Imóveis em Perth</a>
+    </div>
+  </header>
 
-    <main class="miolo">
-        {% block conteudo %}{% endblock %}
-    </main>
+  <main class="miolo">
+    {% with mensagens = get_flashed_messages(with_categories=true) %}
+      {% for categoria, texto in mensagens %}
+        <p class="aviso aviso-{{ categoria }}" role="status">{{ texto }}</p>
+      {% endfor %}
+    {% endwith %}
+    {% block conteudo %}{% endblock %}
+  </main>
 
-    <footer class="miolo rodape">
-        Trabalho final de Tópicos Especiais em Ciência da Computação.
-    </footer>
+  <footer class="miolo rodape">
+    Trabalho final de Tópicos Especiais em Ciência da Computação.
+  </footer>
 </body>
 </html>
